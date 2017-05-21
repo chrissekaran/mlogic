@@ -15,6 +15,7 @@ import static org.junit.Assert.*;
 public class BookingRequestValidationTest {
 
     private BookingRequestValidation bookingRequestValidation;
+    String meetingRecord = "2015-08-17 10:17 01";
 
     @Before
     public void setUp() throws Exception {
@@ -23,17 +24,21 @@ public class BookingRequestValidationTest {
 
     @Test(expected = BookingException.class)
     public void validateFailsForWrongFormatWithoutSpace() throws Exception {
-        bookingRequestValidation.validate("2015-08-17 10:17:06EMP001");
+        bookingRequestValidation.validate("2015-08-17 10:17:06EMP001", meetingRecord);
     }
 
     @Test(expected = BookingException.class)
     public void validateFailsForWrongDateFormatWithoutSpace() throws Exception {
-        bookingRequestValidation.validate("2015-08-1710:17:06 EMP001");
+        bookingRequestValidation.validate("2015-08-1710:17:06 EMP001", meetingRecord);
     }
 
     @Test(expected = DateTimeParseException.class)
-    public void validateFailsForInvalidDateFormat() throws Exception {
-        bookingRequestValidation.validate("2015-08-37 10:17:06 EMP001");
+    public void validateFailsForInvalidDate() throws Exception {
+        bookingRequestValidation.validate("2015-08-37 10:17:06 EMP001", meetingRecord);
     }
 
+    @Test
+    public void validatePassesForCorrectFormat() throws Exception {
+        bookingRequestValidation.validate("2015-08-27 10:17:06 EMP001", meetingRecord);
+    }
 }

@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class BookingRequest {
-    private static final String BOOKING_REQUEST_TIME_FORMAT_PATTERN = "YYYY-MM-DD HH:MM:SS";
+    private static final String BOOKING_REQUEST_TIME_FORMAT_PATTERN = "yyyy-MM-dd HH:mm:ss";
     private static final DateTimeFormatter bookingRequestTimeFormatter = DateTimeFormatter.ofPattern(BOOKING_REQUEST_TIME_FORMAT_PATTERN);
 
     private final LocalDateTime bookingRequestDateTime;
@@ -30,5 +30,4 @@ public class BookingRequest {
     public MeetingRequest getMeetingRequest() {
         return meetingRequest;
     }
-
 }

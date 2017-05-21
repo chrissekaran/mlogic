@@ -21,7 +21,8 @@ public class BookingServiceTest {
     MeetingService meetingService;
     @InjectMocks
     BookingService bookingService;
-    String bookingStringInCorrectFormat = "2015-08-16 09:28:23 EMP003";
+    String bookingRecordInCorrectFormat = "2015-08-16 09:28:23 EMP003";
+    String meetingRecord = "2015-08-17 10:17 01";
 
     @Before
     public void setUp() throws Exception {
@@ -33,18 +34,18 @@ public class BookingServiceTest {
     public void submitBookingFailsForWrongFormatWithoutSpace() throws Exception {
         //doNothing().when(bookingValidationMock.validate(eq(bookingStringInCorrectFormat)));
 
-        bookingService.submitBooking(bookingStringInCorrectFormat);
+        bookingService.submitBooking(bookingRecordInCorrectFormat, meetingRecord);
 
     }
 
     @Test(expected = BookingException.class)
     public void submitBookingFailsForWrongDateFormatWithoutSpace() throws Exception {
-        bookingService.submitBooking("2015-08-1710:17:06 EMP001");
+        bookingService.submitBooking("2015-08-1710:17:06 EMP001", meetingRecord);
     }
 
     @Test(expected = DateTimeParseException.class)
     public void submitBookingFailsForInvalidDateFormat() throws Exception {
-        bookingService.submitBooking("2015-08-37 10:17:06 EMP001");
+        bookingService.submitBooking("2015-08-37 10:17:06 EMP001", meetingRecord);
     }
 
 }

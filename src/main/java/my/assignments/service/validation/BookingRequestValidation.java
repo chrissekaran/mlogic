@@ -2,6 +2,7 @@ package my.assignments.service.validation;
 
 import my.assignments.service.BookingException;
 import my.assignments.service.domain.BookingRequest;
+import my.assignments.service.domain.MeetingRequest;
 
 
 public class BookingRequestValidation {
@@ -10,11 +11,12 @@ public class BookingRequestValidation {
     final int positionEmployee = 2;
     private static final String separator = " ";
 
+    final MeetingRequestValidation meetingRequestValidation = new MeetingRequestValidation();
 
     public BookingRequestValidation() {
     }
 
-    public BookingRequest validate(String booking) throws BookingException {
+    public BookingRequest validate(String booking, String meeting) throws BookingException {
         if (booking == null || booking.isEmpty()) {
             throw new BookingException("Empty or null booking record");
         }
@@ -22,6 +24,7 @@ public class BookingRequestValidation {
         if (bookingElements.length != 3) {
             throw new BookingException("Booking record format is incorrect. Please use 'YYYY-MM-DD HH:MM:SS <EmpId>'");
         }
-        return new BookingRequest(bookingElements[positionDate] + separator + bookingElements[positionTime] + ":00", bookingElements[positionEmployee]);
+        MeetingRequest meetingRequest = meetingRequestValidation.validate(meeting);
+        return new BookingRequest(bookingElements[positionDate] + separator + bookingElements[positionTime], bookingElements[positionEmployee], meetingRequest);
     }
 }

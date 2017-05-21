@@ -29,15 +29,7 @@ public class BookingServiceTest {
         MockitoAnnotations.initMocks(this);
         bookingService = new BookingService(meetingService);
     }
-
-    @Test(expected = DateTimeParseException.class)
-    public void submitBookingFailsForWrongFormatWithoutSpace() throws Exception {
-        //doNothing().when(bookingValidationMock.validate(eq(bookingStringInCorrectFormat)));
-
-        bookingService.submitBooking(bookingRecordInCorrectFormat, meetingRecord);
-
-    }
-
+    
     @Test(expected = BookingException.class)
     public void submitBookingFailsForWrongDateFormatWithoutSpace() throws Exception {
         bookingService.submitBooking("2015-08-1710:17:06 EMP001", meetingRecord);

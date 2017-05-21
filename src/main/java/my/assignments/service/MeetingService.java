@@ -5,7 +5,6 @@ import my.assignments.service.domain.MeetingRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -32,6 +31,7 @@ public class MeetingService {
                 ((timeOfBookingEnd.getHour() > officeEndingHours) ||
                  (timeOfBookingEnd.getHour() == officeEndingHours && timeOfBookingEnd.getMinute() != 0)))   {
             //Omitting millis and nanos
+            LOGGER.error("Booking {} is out of office hours", booking);
             return false;
         }
 
@@ -47,15 +47,17 @@ public class MeetingService {
                 .sorted(Comparator.comparing(MeetingRequest::getMeetingStartTime))
                 .findFirst();
 
-        if(immediateBookingBefore.isPresent() && ! endTimeOfMeetingBefore(immediateBookingBefore)
-                                                    .isBefore(booking.getMeetingRequest()
-                                                    .getMeetingStartTime())) {
+        if (immediateBookingBefore.isPresent() &&
+            ! endTimeOfMeetingBefore(immediateBookingBefore).isEqual(booking.getMeetingRequest().getMeetingStartTime()) &&
+            endTimeOfMeetingBefore(immediateBookingBefore).isAfter(booking.getMeetingRequest().getMeetingStartTime())) {
+            LOGGER.error("Booking start {} is before previous meeting {} end", booking.getMeetingRequest(), immediateBookingBefore.get().toString());
             return false;
         }
 
-        if(immediateBookingAfter.isPresent() && timeOfBookingEnd
-                                                    .isAfter(immediateBookingAfter.get()
-                                                    .getMeetingStartTime())) {
+        if(immediateBookingAfter.isPresent() &&
+            ! timeOfBookingEnd.isEqual(immediateBookingAfter.get().getMeetingStartTime()) &&
+            timeOfBookingEnd.isAfter(immediateBookingAfter.get().getMeetingStartTime())) {
+            LOGGER.error("Booking end {} is after following meeting {} start", booking.getMeetingRequest(), immediateBookingAfter.get().toString());
             return false;
         }
 
@@ -74,24 +76,22 @@ public class MeetingService {
         Set<String> dates = meetingCalendar.keySet().stream()
                 .map(meetingRequest -> meetingRequest.getMeetingStartTime().toLocalDate().toString())
                 .collect(Collectors.toSet());
-        Map<String, List<MeetingRequest>> calendarByDate = new HashMap<>();
+        Map<String, ArrayList<MeetingRequest>> calendarByDate = new HashMap<>();
 
         for(String date: dates) {
             calendarByDate.put(date, new ArrayList<>());
         }
+
         meetingCalendar.keySet().stream().forEach(meetingRequest -> calendarByDate
                                                                         .get(meetingRequest.getMeetingStartTime().toLocalDate().toString())
                                                                         .add(meetingRequest));
 
         for (String date: calendarByDate.keySet()) {
             System.out.println(date);
-            for(MeetingRequest meeting: calendarByDate.get(date)) {
-
+            for(MeetingRequest meeting: calendarByDate.get(date).stream().sorted(Comparator.comparing(MeetingRequest::getMeetingStartTime)).collect(Collectors.toList())) {
                 System.out.println(meeting.startTimeWithoutDate() + " " +meeting.endTimeWithoutDate() + " " + meetingCalendar.get(meeting));
             }
         }
-
-
     }
 
 

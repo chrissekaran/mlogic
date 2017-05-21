@@ -52,5 +52,12 @@ public class MeetingRequest {
         return Objects.hash(meetingStartTime, durationInHours);
     }
 
-
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("MeetingRequest{");
+        sb.append("meetingStartTime=").append(meetingStartTime);
+        sb.append(", durationInHours=").append(durationInHours);
+        sb.append('}');
+        return sb.toString();
+    }
 }
